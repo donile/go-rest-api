@@ -25,3 +25,7 @@ func Create() *App {
 func (a *App) Run() {
 	http.ListenAndServe(":3000", a.mux)
 }
+
+func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	a.mux.ServeHTTP(w, r)
+}
