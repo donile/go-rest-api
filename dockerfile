@@ -8,3 +8,7 @@ RUN go mod download
 COPY cmd cmd
 COPY internal internal
 RUN make
+
+FROM builder AS test-runner
+ENV CGO_ENABLED 0
+CMD ["make" "test"]

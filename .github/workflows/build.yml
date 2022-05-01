@@ -5,4 +5,5 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
-      - run: docker build --rm .
+      - run: docker build -t test-runner .
+      - run: docker run test-runner make test
