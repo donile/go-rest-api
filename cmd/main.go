@@ -1,9 +1,10 @@
 package main
 
 import (
-	"fmt"
+	"app/internal/app"
 )
 
 func main() {
-	fmt.Println("Hello, World!")
+	app := app.Create()
+	app.Run()
 }
