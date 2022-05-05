@@ -1,6 +1,7 @@
 package app
 
 import (
+	"app/internal/app/books"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -18,6 +19,9 @@ func Create() *App {
 	app.mux.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Hello, World"))
 	})
+
+	bookController := books.NewController()
+	app.mux.Mount("/books", bookController)
 
 	return &app
 }
