@@ -2,13 +2,15 @@ package app
 
 import (
 	"app/internal/app/books"
+	"app/internal/app/services"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 )
 
 type App struct {
-	mux *chi.Mux
+	mux      *chi.Mux
+	services *services.Container
 }
 
 func Create() *App {
@@ -16,7 +18,12 @@ func Create() *App {
 		mux: chi.NewRouter(),
 	}
 
-	bookController := books.NewController()
+	builder := services.NewBuilder()
+	builder.AddSingleton("bookController", func() (interface{}, error) { return books.NewController(), nil })
+
+	app.services = builder.Build()
+
+	bookController := app.services.GetRequiredService("bookController").(*books.Controller)
 	app.mux.Mount("/books", bookController)
 
 	return &app
