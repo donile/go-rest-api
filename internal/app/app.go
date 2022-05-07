@@ -16,10 +16,6 @@ func Create() *App {
 		mux: chi.NewRouter(),
 	}
 
-	app.mux.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello, World"))
-	})
-
 	bookController := books.NewController()
 	app.mux.Mount("/books", bookController)
 
