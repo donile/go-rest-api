@@ -10,12 +10,12 @@ import (
 )
 
 type App struct {
-	mux *chi.Mux
+	router *chi.Mux
 }
 
 func Create() *App {
 	app := App{
-		mux: chi.NewRouter(),
+		router: chi.NewRouter(),
 	}
 
 	psqlInfo := "host=localhost port=5432 user=postgres password=password dbname=book sslmode=disable"
@@ -27,15 +27,15 @@ func Create() *App {
 
 	bookRepository := books.NewRepository(db)
 	bookController := books.NewController(bookRepository)
-	app.mux.Mount("/books", bookController)
+	app.router.Mount("/books", bookController)
 
 	return &app
 }
 
 func (a *App) Run() {
-	http.ListenAndServe(":3000", a.mux)
+	http.ListenAndServe(":3000", a.router)
 }
 
 func (a *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	a.mux.ServeHTTP(w, r)
+	a.router.ServeHTTP(w, r)
 }
