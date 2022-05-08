@@ -2,6 +2,7 @@ package app
 
 import (
 	"app/internal/app/books"
+	"database/sql"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -16,7 +17,15 @@ func Create() *App {
 		mux: chi.NewRouter(),
 	}
 
-	bookController := books.NewController()
+	psqlInfo := "host=localhost port=5432 user=postgres password=password dbname=book sslmode=disable"
+	db, err := sql.Open("postgres", psqlInfo)
+
+	if err != nil {
+		panic(err)
+	}
+
+	bookRepository := books.NewRepository(db)
+	bookController := books.NewController(bookRepository)
 	app.mux.Mount("/books", bookController)
 
 	return &app

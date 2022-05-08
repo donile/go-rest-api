@@ -16,6 +16,9 @@ func TestApp_PostBook_Returns201Created(t *testing.T) {
 	w := httptest.NewRecorder()
 	json := strings.NewReader(`{ "author": "Robin Hobb", "title": "Assasin's Apprentice" }`)
 	r, _ := http.NewRequest("POST", "/books", json)
+	r.Header = map[string][]string{
+		"Content-Type": {"application/json"},
+	}
 
 	app.ServeHTTP(w, r)
 
@@ -25,6 +28,10 @@ func TestApp_PostBook_Returns201Created(t *testing.T) {
 }
 
 func TestApp_PostBook_InsertsBook(t *testing.T) {
+	db := createDb()
+	defer db.Close()
+	db.Exec("DELETE FROM book;")
+
 	author := "Robin Hobb"
 	title := "Assasin's Apprentice"
 
@@ -33,12 +40,13 @@ func TestApp_PostBook_InsertsBook(t *testing.T) {
 	json := fmt.Sprintf(`{ "author": "%v", "title": "%v" }`, author, title)
 	body := strings.NewReader(json)
 	r, _ := http.NewRequest(http.MethodPost, "/books", body)
+	r.Header = map[string][]string{
+		"Content-Type": {"application/json"},
+	}
 
 	app.ServeHTTP(w, r)
 
-	sqlQuery := `SELECT id, author, title FROM book WHERE author=$1 AND title=$2;`
-	db := createDb()
-	defer db.Close()
+	sqlQuery := `SELECT author, title FROM book WHERE author=$1 AND title=$2;`
 	row := db.QueryRow(sqlQuery, author, title)
 	var authorInDb string
 	var titleInDb string
