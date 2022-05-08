@@ -1,0 +1,9 @@
+
+###
+POST http://localhost:3000/books
+Content-Type: application/json
+
+{
+    "author": "Robin Hobb",
+    "title": "Assasin's Apprentice"
+}
